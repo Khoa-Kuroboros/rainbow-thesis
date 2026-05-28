@@ -1,0 +1,16 @@
+torch>=2.0.0
+torchvision
+gymnasium[atari]
+ale-py
+autorom
+opencv-python
+numpy>=1.24
+pandas
+matplotlib
+wandb
+tensorboard
+psutil
+tqdm
+imageio
+imageio-ffmpeg
+pyyaml

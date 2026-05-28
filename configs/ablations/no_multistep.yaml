@@ -1,0 +1,42 @@
+# Rainbow hyperparameters — Table 1 của paper
+
+game: PongNoFrameskip-v4
+
+agent: rainbow
+seed: 1
+total_frames: 10_000_000
+
+# Network
+n_atoms: 51
+v_min: -10.0
+v_max: 10.0
+noisy_sigma0: 0.5
+
+# Training
+batch_size: 32
+learning_rate: 0.0000625
+adam_eps: 0.00015
+target_update: 32000
+min_history: 80000
+train_freq: 4
+discount: 0.99
+
+# Replay
+buffer_size: 1_000_000
+priority_omega: 0.5
+priority_beta_start: 0.4
+priority_beta_end: 1.0
+
+# Multi-step
+n_step: 3
+
+# Eval
+eval_freq: 250_000
+eval_episodes: 10
+
+# Logging
+checkpoint_freq: 500_000
+checkpoint_dir: checkpoints/
+log_dir: logs/
+wandb_project: rainbow-thesis
+ablation: no_multistep
