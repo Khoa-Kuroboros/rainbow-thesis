@@ -71,6 +71,8 @@ class SumTree:
 
     @property
     def max_priority(self) -> float:
+        if self.size == 0:
+            return 1.0
         return self.tree[self.capacity:self.capacity + self.size].max()
 
     @property

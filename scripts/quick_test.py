@@ -44,8 +44,8 @@ def test_cuda():
 
 check("torch.cuda.is_available()", test_cuda)
 check("PyTorch version ≥ 2.0",
-      lambda: (v := torch.__version__,
-               assert v >= "2.0", f"Version {v} < 2.0"))
+      lambda: (_ for _ in [torch.__version__]
+               if _ >= "2.0" or (_ for _ in ()).throw(AssertionError(f"Version {_} < 2.0"))))
 
 # ── Test 2: Atari environment ─────────────────────────────────
 print("\n[2] Atari Environment")
@@ -230,7 +230,7 @@ def test_checkpoint():
     import tempfile
     env = make_atari_env("PongNoFrameskip-v4", seed=0)
     agent = RainbowAgent(n_actions=env.action_space.n, device=device,
-                         total_frames=1000)
+                         total_frames=1000, buffer_capacity=500)
     with tempfile.NamedTemporaryFile(suffix=".pt", delete=False) as f:
         path = f.name
     agent.save(path)
