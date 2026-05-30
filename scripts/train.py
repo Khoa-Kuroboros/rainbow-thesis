@@ -343,7 +343,7 @@ def parse_args():
     p.add_argument("--target_update",  type=int,   default=32_000)
     p.add_argument("--discount",       type=float, default=0.99)
     p.add_argument("--min_history",    type=int,   default=80_000)
-    p.add_argument("--buffer_size",    type=int,   default=1_000_000)
+    p.add_argument("--buffer_size",    type=int,   default=250_000)
     p.add_argument("--n_step",         type=int,   default=3)
     p.add_argument("--priority_omega", type=float, default=0.5)
     p.add_argument("--beta_start",     type=float, default=0.4)
