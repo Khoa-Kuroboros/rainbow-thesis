@@ -166,9 +166,9 @@ class PrioritizedReplayBuffer:
         # SumTree cho priorities
         self.tree = SumTree(capacity)
 
-        # Pre-allocate arrays — dùng uint8 để tiết kiệm RAM
+        # Pre-allocate arrays — CHỈ 1 array states (tiết kiệm 50% RAM)
+        # next_state = states[(idx+1) % capacity] — circular buffer trick
         self.states      = np.zeros((capacity, *obs_shape), dtype=np.uint8)
-        self.next_states = np.zeros((capacity, *obs_shape), dtype=np.uint8)
         self.actions     = np.zeros(capacity, dtype=np.int64)
         self.rewards     = np.zeros(capacity, dtype=np.float32)
         self.gammas      = np.zeros(capacity, dtype=np.float32)  # γ^n
@@ -215,12 +215,11 @@ class PrioritizedReplayBuffer:
         priority = max(self.tree.max_priority, self._eps) ** self.alpha
 
         idx = self.tree.add(priority)
-        self.states[idx]      = state
-        self.next_states[idx] = next_state
-        self.actions[idx]     = action
-        self.rewards[idx]     = R
-        self.gammas[idx]      = gamma_n
-        self.dones[idx]       = float(done)
+        self.states[idx]  = state
+        self.actions[idx] = action
+        self.rewards[idx] = R
+        self.gammas[idx]  = gamma_n
+        self.dones[idx]   = float(done)
 
     def sample(self, batch_size: int, current_frame: int) -> dict:
         """
@@ -253,9 +252,11 @@ class PrioritizedReplayBuffer:
         weights = (N * probs) ** (-beta)
         weights /= weights.max()  # normalize
 
+        # next_state = state tại (idx+1) % capacity — circular buffer
+        next_indices = (indices + 1) % self.capacity
         return {
             "states":      self.states[indices].copy(),
-            "next_states": self.next_states[indices].copy(),
+            "next_states": self.states[next_indices].copy(),
             "actions":     self.actions[indices].copy(),
             "rewards":     self.rewards[indices].copy(),
             "gammas":      self.gammas[indices].copy(),
