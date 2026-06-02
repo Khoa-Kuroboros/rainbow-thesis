@@ -364,6 +364,7 @@ def parse_args():
 
     # Logging
     p.add_argument("--wandb_project", default="rainbow-thesis")
+    p.add_argument("--wandb_key",     default=None, help="Wandb API key")
     p.add_argument("--no_wandb",      action="store_true",
                    help="Tắt wandb (chạy offline/debug)")
 
