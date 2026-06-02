@@ -112,6 +112,9 @@ def train(args):
     run_name = f"{game_short}_{ablation_tag}_s{args.seed}"
 
     # ── Wandb ─────────────────────────────────────────────
+    if args.wandb_key:
+        import wandb as _w
+        _w.login(key=args.wandb_key)
     wandb.init(
         project=args.wandb_project,
         name=run_name,
