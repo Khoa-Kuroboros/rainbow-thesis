@@ -153,6 +153,7 @@ class RainbowAgent:
 
         if eval_mode:
             self.online_net.train()
+            self.online_net.reset_noise()
 
         return q_values.argmax(dim=1).item()
 
@@ -274,15 +275,21 @@ class RainbowAgent:
             offset = torch.arange(batch_size, device=self.device) \
                          .unsqueeze(1) * self.n_atoms  # (batch, 1)
 
+            # Fix: khi lo==hi (b là số nguyên), cả 2 weight = 0 → mất mass.
+            # Phải gán full mass về 1 phía khi lo==hi.
+            lo_weight = hi.float() - b
+            hi_weight = b - lo.float()
+            eq_mask = (lo == hi)
+            lo_weight = torch.where(eq_mask, torch.ones_like(lo_weight), lo_weight)
+            hi_weight = torch.where(eq_mask, torch.zeros_like(hi_weight), hi_weight)
+
             m.view(-1).index_add_(
-                0,
-                (lo + offset).view(-1),
-                (probs_next * (hi.float() - b)).view(-1)
+                0, (lo + offset).view(-1),
+                (probs_next * lo_weight).view(-1)
             )
             m.view(-1).index_add_(
-                0,
-                (hi + offset).view(-1),
-                (probs_next * (b - lo.float())).view(-1)
+                0, (hi + offset).view(-1),
+                (probs_next * hi_weight).view(-1)
             )
             # m: (batch, n_atoms) — target distribution, sum = 1
 

@@ -343,7 +343,7 @@ def parse_args():
     p.add_argument("--lr",             type=float, default=6.25e-5)
     p.add_argument("--adam_eps",       type=float, default=1.5e-4)
     p.add_argument("--batch_size",     type=int,   default=32)
-    p.add_argument("--target_update",  type=int,   default=32_000)
+    p.add_argument("--target_update",  type=int,   default=8_000)
     p.add_argument("--discount",       type=float, default=0.99)
     p.add_argument("--min_history",    type=int,   default=80_000)
     p.add_argument("--buffer_size",    type=int,   default=100_000)
