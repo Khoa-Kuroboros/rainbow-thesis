@@ -75,7 +75,12 @@ def main():
         imageio.mimsave(mp4, frames, fps=30)
         print(f"  Saved: {mp4}")
 
-    gif_frames = all_frames[::3][:200]
+    n_total = len(all_frames)
+    if n_total > 200:
+        idx = np.linspace(0, n_total - 1, 200, dtype=int)
+        gif_frames = [all_frames[i] for i in idx]
+    else:
+        gif_frames = all_frames
     try:
         from PIL import Image
         gif_frames = [np.array(Image.fromarray(f).resize(
