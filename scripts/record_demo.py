@@ -11,6 +11,7 @@ from src.utils.atari_wrappers import (
 )
 
 def record_episode(agent, game, seed=0, render_size=(420, 320), max_steps=1500):
+    np.random.seed(seed)  # fix: seed global RNG để NoopResetEnv reproducible
     gym.register_envs(ale_py)
     env = gym.make(game, render_mode="rgb_array")
     env.reset(seed=seed)
