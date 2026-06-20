@@ -63,7 +63,22 @@ def main():
                          n_step=args.n_step, ablation=args.ablation)
     agent.load(args.checkpoint)
     agent.online_net.eval()
-
+    all_rewards = []
+    best_frames, best_reward = None, -1e9
+    for ep in range(args.episodes):
+        print(f"Recording episode {ep+1}/{args.episodes}...")
+        frames, reward = record_episode(agent, args.game, seed=42+ep)
+        all_rewards.append(reward)
+        print(f"  Reward: {reward:.0f} | Frames: {len(frames)}")
+        mp4 = os.path.join(args.output, f"{game_short}_{args.agent_name}_ep{ep+1}.mp4")
+        imageio.mimsave(mp4, frames, fps=30)
+        print(f"  Saved: {mp4}")
+        if reward > best_reward:
+            best_reward = reward
+            best_frames = frames
+        else:
+            del frames
+    all_frames = best_frames
     all_rewards, all_frames = [], []
     for ep in range(args.episodes):
         print(f"Recording episode {ep+1}/{args.episodes}...")
