@@ -10,7 +10,7 @@ from src.utils.atari_wrappers import (
     NoopResetEnv, MaxAndSkipEnv, WarpFrame, FrameStack
 )
 
-def record_episode(agent, game, seed=0, render_size=(420, 320)):
+def record_episode(agent, game, seed=0, render_size=(420, 320), max_steps=3000):
     gym.register_envs(ale_py)
     env = gym.make(game, render_mode="rgb_array")
     env.reset(seed=seed)
@@ -18,7 +18,9 @@ def record_episode(agent, game, seed=0, render_size=(420, 320)):
     obs, _ = env_w.reset()
     frames, total = [], 0.0
     done = False
-    while not done:
+    step = 0
+    while not done and step < max_steps:
+        step += 1
         raw = env.render()
         if raw is not None:
             try:
