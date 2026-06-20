@@ -42,6 +42,7 @@ def main():
     p.add_argument("--episodes",   type=int, default=2)
     p.add_argument("--output",     default="results/videos")
     p.add_argument("--n_step",     type=int, default=10)
+    p.add_argument("--ablation",   default=None)
     args = p.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -54,8 +55,8 @@ def main():
     env_tmp.close()
 
     agent = RainbowAgent(n_actions=n_actions, device=device,
-                         total_frames=5_000_000, buffer_capacity=1000,
-                         n_step=args.n_step)
+                         total_frames=5_000_000, buffer_capacity=10,
+                         n_step=args.n_step, ablation=args.ablation)
     agent.load(args.checkpoint)
     agent.online_net.eval()
 
